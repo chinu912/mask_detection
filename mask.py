@@ -18,6 +18,7 @@ from sklearn.metrics import classification_report
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import os
 
 # initialize the initial learning rate, number of epochs to train for,
@@ -61,8 +62,8 @@ labels = np.array(labels)
 aug = ImageDataGenerator(
     rotation_range=20,
     zoom_range=0.15,
-    width_shift_range=0.2,
-    height_shift_range=0.2,
+    width_shift_range=0.5,
+    height_shift_range=0.5,
     shear_range=0.15,
     horizontal_flip=True,
     fill_mode="nearest")
@@ -77,7 +78,7 @@ headModel = baseModel.output
 headModel = AveragePooling2D(pool_size=(7, 7))(headModel)
 headModel = Flatten(name="flatten")(headModel)
 headModel = Dense(128, activation="relu")(headModel)
-headModel = Dropout(0.5)(headModel)
+headModel = Dropout(0.6)(headModel)
 headModel = Dense(2, activation="softmax")(headModel)
 
 # place the head FC model on top of the base model (this will become
@@ -90,7 +91,7 @@ for layer in baseModel.layers:
     layer.trainable = False
 
 # compile our model
-print("[INFO] compiling model...")
+print("[Information] compiling model...")
 opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
 model.compile(loss="binary_crossentropy", optimizer=opt, metrics=["accuracy"])
 
@@ -104,7 +105,7 @@ H = model.fit(
     epochs=EPOCHS)
 
 # make predictions on the testing set
-print("[INFO] evaluating network...")
+print("[Information] evaluating network...")
 predIdxs = model.predict(testX, batch_size=BS)
 
 # for each image in the testing set we need to find the index of the
@@ -115,7 +116,7 @@ predIdxs = np.argmax(predIdxs, axis=1)
 print(classification_report(testY.argmax(axis=1), predIdxs , target_names=lb.classes_))
 
 # serialize the model to disk
-print("[INFO] saving mask detector model...")
+print("[Informations] saving mask detector model...")
 model.save("mask_detector.model", save_format="h5")
 
 # plot the training loss and accuracy
