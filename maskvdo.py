@@ -8,7 +8,7 @@ import imutils
 import time
 import cv2
 import os
-
+import pandas as pd
 def detect_and_predict_mask(frame, faceNet, maskNet):
 
 	(h, w) = frame.shape[:2]
@@ -65,7 +65,12 @@ prototxtPath = r"face_detector\deploy.prototxt"
 weightsPath = r"face_detector\res10_300x300_ssd_iter_140000.caffemodel"
 faceNet = cv2.dnn.readNet(prototxtPath, weightsPath)
 
-
+if(1==1){
+print("This is the main code")
+}
+else{
+print("False")
+}
 maskNet = load_model("mask_detector.model")
 
 # initialize the video stream
